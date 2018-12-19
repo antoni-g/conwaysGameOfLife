@@ -12,9 +12,9 @@ def main():
 	while not out.query_closed():
 		# update graphical frame
 		out.render_frame()
-		print('okay')
 		# framerate
-		time.sleep(1./30)
+		time.sleep(1./10)
+		print(out.query_closed())
 		sys.stdout.flush()
 # run
 main()
