@@ -1,5 +1,6 @@
 from graphics import *
 import numpy as np
+import sys
 import grid
 
 class Output(object):
@@ -9,17 +10,14 @@ class Output(object):
 		self.grid_x = grid_x
 		self.grid_y = grid_y
 		# figure out grid size
-		cell_x = size_x - ((2*offset))//grid_x 
-		cell_y = size_y - ((2*offset))//grid_y
+		cell_x = (size_x - ((2*offset)))//grid_x 
+		cell_y = (size_y - ((2*offset)))//grid_y
 		self.cell_size = min(cell_x,cell_y)
 		if self.cell_size < 1:
 			self.win.close()
 			raise ValueError("Input window size and offset are improperly set")
-		self.init_x = init_x = self.win.width//2-(self.grid_x/2)*self.cell_size
+		self.init_x = (size_x//2)-(self.grid_x/2)*self.cell_size
 		self.init_y = offset
-
-		print('initial: ' + str(self.init_x,self.init_y))
-
 		# finally, init screen
 		self.clear_screen()
 
@@ -29,12 +27,12 @@ class Output(object):
 		for i in range(self.grid_x):
 			for j in range(self.grid_y):
 				curr_x = self.init_x+i*self.cell_size
-				curr_y = self.init_y+i*self.cell_size
+				curr_y = self.init_y+j*self.cell_size
 				r = Rectangle(Point(curr_x,curr_y),Point((curr_x+self.cell_size),(curr_y+self.cell_size)))
-				print('drawing rect at: ' + str((curr_x,curr_y)))
 				r.draw(self.win)
 
 	def render_frame(self,grid):
+
 		self.clear_screen()
 		# draw grid
 		data = grid.current_state
@@ -42,15 +40,15 @@ class Output(object):
 			for j in range(self.grid_y):
 				if data[j][i]:
 					curr_x = self.init_x+i*self.cell_size
-					curr_y = self.init_y+i*self.cell_size
-					r = Rectangle(curr_x,curr_y,curr_x+self.cell_size,curr_y+self.cell_size)
+					curr_y = self.init_y+j*self.cell_size
+					r = Rectangle(Point(curr_x,curr_y),Point((curr_x+self.cell_size),(curr_y+self.cell_size)))
+					r.setFill('black')
 					r.draw(self.win)
+					print('drawing rect at: ' + str((curr_x,curr_y)))
+					sys.stdout.flush()
 		self.win.update()
-
-
 		# check to see if closing
 		key = self.win.checkKey()
-		print(key)
 		if key == 'q':
 			self.win.close()
 

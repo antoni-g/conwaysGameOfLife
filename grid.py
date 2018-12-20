@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 class Grid(object):
 	# initialize an empty game grid
@@ -14,13 +15,13 @@ class Grid(object):
 	# assume screen edges are dead
 	# params:
 	# @ x - int
-	# @ y - int
+	# @ y - q
 	def cell_neighbors(self,x,y):
 		sum = 0
 		left = x > 0
 		top = y > 0
-		right = x < self.max_x
-		bottom = y < self.max_y
+		right = x+1 < self.max_x
+		bottom = y+1 < self.max_y
 		if top and left:
 			sum += self.current_state[y-1][x-1]
 		if top:
@@ -40,22 +41,25 @@ class Grid(object):
 		return sum
 
 	# do one tick of updates on all cells, simultaneously
-	def update_tick(self):
+	def update_tick(self,call):
 		for y in range(self.max_y):
 			for x in range(self.max_x):
 				res = self.cell_neighbors(x,y)
 				# process game rules
 				# live cells
 				if self.current_state[y][x]:
-					if res < 2:
+					if res < 2 or res > 3:
+						# die due to overpopulation
 						# die due to underpopulation
 						self.next_state[y][x] = 0
-					if res > 3:
-						# die due to overpopulation
-						self.next_state[y][x] = 0
+					else:
+						self.next_state[y][x] = 1
+				# dead cells
 				else:
+					# become alive
 					if res == 3:
 						self.next_state[y][x] = 1
 		# flush update into next state
-		current_state = next_state
-		next_state = np.zeros((self.max_y,self.max_x),dtype=np.bool_)
+		self.current_state = self.next_state
+		self.next_state = np.zeros((self.max_y,self.max_x),dtype=np.bool_)
+		call()
