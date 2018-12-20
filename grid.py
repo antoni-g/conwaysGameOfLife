@@ -8,6 +8,7 @@ class Grid(object):
 	def __init__(self,init_state):
 		self.max_x = len(init_state[0])
 		self.max_y = len(init_state)
+		print('size: ' + str((self.max_x,self.max_y)))
 		self.current_state = np.zeros((self.max_y,self.max_x),dtype=np.bool_)
 		self.next_state = np.zeros((self.max_y,self.max_x),dtype=np.bool_)
 

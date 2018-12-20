@@ -4,14 +4,14 @@ import sys
 import grid
 
 class Output(object):
-	def __init__(self,size_x,size_y,offset,grid_x,grid_y):
+	def __init__(self,input_grid,size_x,size_y,offset):
 		self.win = GraphWin("Conway's Game of Life", size_x, size_y,autoflush=False)
 		# figure out grid positioning
-		self.grid_x = grid_x
-		self.grid_y = grid_y
+		self.grid_x = input_grid.max_x
+		self.grid_y = input_grid.max_y
 		# figure out grid size
-		cell_x = (size_x - ((2*offset)))//grid_x 
-		cell_y = (size_y - ((2*offset)))//grid_y
+		cell_x = (size_x - ((2*offset)))//self.grid_x 
+		cell_y = (size_y - ((2*offset)))//self.grid_y
 		self.cell_size = min(cell_x,cell_y)
 		if self.cell_size < 1:
 			self.win.close()
@@ -32,7 +32,6 @@ class Output(object):
 				r.draw(self.win)
 
 	def render_frame(self,grid):
-
 		self.clear_screen()
 		# draw grid
 		data = grid.current_state
@@ -44,8 +43,6 @@ class Output(object):
 					r = Rectangle(Point(curr_x,curr_y),Point((curr_x+self.cell_size),(curr_y+self.cell_size)))
 					r.setFill('black')
 					r.draw(self.win)
-					print('drawing rect at: ' + str((curr_x,curr_y)))
-					sys.stdout.flush()
 		self.win.update()
 		# check to see if closing
 		key = self.win.checkKey()
